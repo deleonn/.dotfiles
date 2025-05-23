@@ -29,7 +29,8 @@ companion.setup({
         },
         schema = {
           model = {
-            default = "codegemma:latest",
+            default = "qwen2.5-coder:32b",
+            -- default = "codegemma:latest",
           },
           num_ctx = {
             default = 20000,

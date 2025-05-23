@@ -13,14 +13,11 @@ return require('packer').startup(function(use)
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
 
-    use('Mofiqul/dracula.nvim')
+  use('Mofiqul/dracula.nvim')
 
-    use({
-        'projekt0n/github-nvim-theme',
-        config = function()
-            vim.cmd('colorscheme github_dark_high_contrast')
-        end
-    })
+  use('projekt0n/github-nvim-theme')
+
+  use('luisiacc/the-matrix.nvim')
 
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
 	use('nvim-treesitter/playground')
