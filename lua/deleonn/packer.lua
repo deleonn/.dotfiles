@@ -17,6 +17,13 @@ return require('packer').startup(function(use)
 
   use('projekt0n/github-nvim-theme')
 
+  use {
+    '2nthony/vitesse.nvim',
+    requires = { 
+      { 'tjdevries/colorbuddy.nvim' }
+    }
+  }
+
   use('luisiacc/the-matrix.nvim')
 
 	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
@@ -90,11 +97,30 @@ return require('packer').startup(function(use)
         end
     }
 
-    use({
-      'olimorris/codecompanion.nvim',
+    -- use({
+    --   'olimorris/codecompanion.nvim',
+    --   requires = {
+    --     "nvim-lua/plenary.nvim",
+    --     "nvim-treesitter/nvim-treesitter",
+    --     "ravitemer/mcphub.nvim"
+    --   }
+    -- })
+
+    use {
+      'yetone/avante.nvim',
       requires = {
-        "nvim-lua/plenary.nvim",
-        "nvim-treesitter/nvim-treesitter",
-      }
-    })
+        'nvim-lua/plenary.nvim',
+        'muniftanjim/nui.nvim',
+        'meanderingprogrammer/render-markdown.nvim',
+        'hrsh7th/nvim-cmp',
+        'nvim-tree/nvim-web-devicons',
+        'hakonharnes/img-clip.nvim',
+        'zbirenbaum/copilot.lua',
+        'stevearc/dressing.nvim',
+        'folke/snacks.nvim'
+      },
+      branch = 'main',
+      run = 'make',
+    }
+
 end)
