@@ -3,21 +3,35 @@
 -- Credit: glepnir
 local lualine = require('lualine')
 
--- Color table for highlights
--- stylua: ignore
-local colors = {
-  bg       = '#202328',
-  fg       = '#bbc2cf',
-  yellow   = '#ECBE7B',
-  cyan     = '#008080',
-  darkblue = '#081633',
-  green    = '#98be65',
-  orange   = '#FF8800',
-  violet   = '#a9a1e1',
-  magenta  = '#c678dd',
-  blue     = '#51afef',
-  red      = '#ec5f67',
-}
+-- Get colors from the active theme
+local function get_theme_colors()
+  local normal = vim.api.nvim_get_hl(0, { name = 'Normal' })
+  local normal_bg = normal.bg and string.format('#%06x', normal.bg) or '#202328'
+  local normal_fg = normal.fg and string.format('#%06x', normal.fg) or '#bbc2cf'
+  
+  -- Try to get semantic colors from theme, fallback to defaults
+  local function get_hl_color(group, attr, default)
+    local hl = vim.api.nvim_get_hl(0, { name = group })
+    local color = hl[attr]
+    return color and string.format('#%06x', color) or default
+  end
+  
+  return {
+    bg       = normal_bg,
+    fg       = normal_fg,
+    yellow   = get_hl_color('DiagnosticWarn', 'fg', '#ECBE7B'),
+    cyan     = get_hl_color('DiagnosticInfo', 'fg', '#008080'),
+    darkblue = get_hl_color('Comment', 'fg', '#081633'),
+    green    = get_hl_color('DiagnosticOk', 'fg', '#98be65'),
+    orange   = get_hl_color('DiagnosticWarn', 'fg', '#FF8800'),
+    violet   = get_hl_color('Statement', 'fg', '#a9a1e1'),
+    magenta  = get_hl_color('Keyword', 'fg', '#c678dd'),
+    blue     = get_hl_color('Function', 'fg', '#51afef'),
+    red      = get_hl_color('DiagnosticError', 'fg', '#ec5f67'),
+  }
+end
+
+local colors = get_theme_colors()
 
 local conditions = {
   buffer_not_empty = function()
