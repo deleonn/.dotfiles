@@ -12,6 +12,7 @@ return require('packer').startup(function(use)
   use('Mofiqul/dracula.nvim')
 
   use('projekt0n/github-nvim-theme')
+  use('folke/tokyonight.nvim')
 
   use {
     '2nthony/vitesse.nvim',
