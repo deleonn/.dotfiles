@@ -45,3 +45,54 @@ end
 --     ui.close()
 -- end
 
+-- Signs: breakpoints and current execution line
+vim.fn.sign_define('DapBreakpoint',         { text = '●', texthl = 'DapBreakpoint',         linehl = '',              numhl = '' })
+vim.fn.sign_define('DapBreakpointCondition',{ text = '◆', texthl = 'DapBreakpointCondition', linehl = '',              numhl = '' })
+vim.fn.sign_define('DapLogPoint',           { text = '◉', texthl = 'DapLogPoint',            linehl = '',              numhl = '' })
+vim.fn.sign_define('DapStopped',            { text = '▶', texthl = 'DapStopped',             linehl = 'DapStoppedLine', numhl = '' })
+vim.fn.sign_define('DapBreakpointRejected', { text = '○', texthl = 'DapBreakpointRejected',  linehl = '',              numhl = '' })
+
+vim.api.nvim_set_hl(0, 'DapBreakpoint',         { fg = '#e51400' })
+vim.api.nvim_set_hl(0, 'DapBreakpointCondition', { fg = '#f5a623' })
+vim.api.nvim_set_hl(0, 'DapLogPoint',            { fg = '#61afef' })
+vim.api.nvim_set_hl(0, 'DapStopped',             { fg = '#98c379' })
+vim.api.nvim_set_hl(0, 'DapStoppedLine',         { bg = '#1e3a2a' })
+vim.api.nvim_set_hl(0, 'DapBreakpointRejected',  { fg = '#666666' })
+
+-- Disable auto-loading of .vscode/launch.json — it contains `restart: true` which
+-- causes a tight reconnect loop in nvim-dap. We manage configs explicitly below.
+dap.providers.configs["dap.launch.json"] = function() return {} end
+
+local js_debug_path = vim.fn.stdpath("data") .. "/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js"
+
+dap.adapters["pwa-node"] = {
+  type = "server",
+  host = "localhost",
+  port = "${port}",
+  executable = {
+    command = "node",
+    args = { js_debug_path, "${port}" },
+  },
+}
+
+local js_attach = {
+  {
+    name = "Webapp Attach",
+    type = "pwa-node",
+    request = "attach",
+    port = 9229,
+    address = "localhost",
+    skipFiles = { "<node_internals>/**", "node_modules/**" },
+    sourceMaps = true,
+    resolveSourceMapLocations = { "${workspaceFolder}/**", "!**/node_modules/**" },
+    localRoot = "${workspaceFolder}",
+    remoteRoot = "/app",
+    smartStep = true,
+  }
+}
+
+dap.configurations.javascript = js_attach
+dap.configurations.typescript = js_attach
+dap.configurations.typescriptreact = js_attach
+dap.configurations.javascriptreact = js_attach
+

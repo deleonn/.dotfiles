@@ -88,4 +88,32 @@ return require('packer').startup(function(use)
   }
 
   use('github/copilot.vim')
+
+  use('nvim-tree/nvim-web-devicons')
+  use {
+    "pwntester/octo.nvim",
+    cmd = "Octo",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope.nvim", -- or fzf-lua / snacks.nvim
+      "nvim-tree/nvim-web-devicons",
+    },
+    setup = function()
+      vim.keymap.set("n", "<leader>op", "<CMD>Octo pr list<CR>", { desc = "List GitHub PullRequests" })
+      vim.keymap.set("n", "<leader>os", function()
+        vim.cmd("packadd octo.nvim")
+        require("octo.utils").create_base_search_command({
+          include_current_repo = true,
+        })
+      end, { desc = "Search GitHub" })
+    end,
+    config = function()
+      require("octo").setup({
+        picker = "telescope",
+        enable_builtin = true,
+        use_local_files = true,
+        ssh_aliases = { ["atlas.github.com"] = "github.com" },
+      })
+    end,
+  }
 end)

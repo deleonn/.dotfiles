@@ -162,6 +162,27 @@ ins_left {
   },
 }
 
+ins_left {
+  function()
+    local session = require('dap').session()
+    if not session then return '' end
+    if session.stopped_thread_id then
+      return ' Stopped'
+    end
+    return '⏵ Running'
+  end,
+  cond = function()
+    return require('dap').session() ~= nil
+  end,
+  color = function()
+    local session = require('dap').session()
+    if session and session.stopped_thread_id then
+      return { fg = colors.green, gui = 'bold' }
+    end
+    return { fg = colors.yellow, gui = 'bold' }
+  end,
+}
+
 -- Insert mid section. You can make any number of sections in neovim :)
 -- for lualine it's any number greater then 2
 -- ins_left {
