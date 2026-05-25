@@ -29,12 +29,40 @@ vim.keymap.set('n', '<Leader>d?', function()
     require('dapui').eval(nil, { enter = true })
 end)
 
+local function lualine_dap(state)
+  if _G.set_lualine_dap_state then _G.set_lualine_dap_state(state) end
+end
+
 dap.listeners.before.attach.dapui_config = function()
-    ui.open()
+  ui.open()
+end
+dap.listeners.after.attach.dap_lualine = function()
+  lualine_dap('running')
 end
 
 dap.listeners.before.launch.dapui_config = function()
-    ui.open()
+  ui.open()
+end
+dap.listeners.after.launch.dap_lualine = function()
+  lualine_dap('running')
+end
+
+dap.listeners.after.event_stopped.dap_lualine = function()
+  lualine_dap('stopped')
+end
+
+dap.listeners.after.event_continued.dap_lualine = function()
+  lualine_dap('running')
+end
+
+dap.listeners.after.event_terminated.dap_lualine = function()
+  lualine_dap(nil)
+end
+dap.listeners.after.event_exited.dap_lualine = function()
+  lualine_dap(nil)
+end
+dap.listeners.after.disconnect.dap_lualine = function()
+  lualine_dap(nil)
 end
 
 -- dap.listeners.before.event_terminated.dapui_config = function()
@@ -95,4 +123,13 @@ dap.configurations.javascript = js_attach
 dap.configurations.typescript = js_attach
 dap.configurations.typescriptreact = js_attach
 dap.configurations.javascriptreact = js_attach
+
+-- .NET / C# via netcoredbg running in Docker (server mode, port forwarded by OrbStack)
+dap.adapters.coreclr_hcm      = { type = 'server', host = 'localhost', port = 5678 }
+dap.adapters.coreclr_platform = { type = 'server', host = 'localhost', port = 5679 }
+
+dap.configurations.cs = {
+  { type = 'coreclr_hcm',      name = 'Attach HCM-BE (Docker)',   request = 'attach' },
+  { type = 'coreclr_platform', name = 'Attach Platform (Docker)', request = 'attach' },
+}
 
